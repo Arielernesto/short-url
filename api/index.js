@@ -12,7 +12,7 @@ const PORT = process.env.PORT ?? 5000
 app.use(express.json())
 app.use(cookieParser())
 
-app.use(express.static(path.join(process.cwd(), './app/dist')))
+app.use(express.static(path.join(process.cwd(), './api/dist')))
 
 // app.use(AuthController.authorize)
 
@@ -21,14 +21,14 @@ app.use('/api/auth',AuthRouter)
 app.use('/api/url', LinkRouter)
 
 app.get('/api', (req, res) => {
-    return res.json(path.join(process.cwd(), '../app/dist'))
+    return res.json(path.join(process.cwd(), '../api/dist'))
 })
 
 
 
 // Routes Client
 app.get('*', (req, res) => {
-   res.sendFile(path.join(process.cwd(), './app/dist', 'index.html'))
+   res.sendFile(path.join(process.cwd(), './api/dist', 'index.html'))
 })
 
 
