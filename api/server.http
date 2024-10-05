@@ -1,1 +1,24 @@
-GET http://localhost:5000
+POST http://localhost:5000/api/auth/user/edit
+Content-Type: application/json
+
+ {
+    "name": "Ariel Fajardo",
+    "email": "fajardoariel435@gmail.com",
+    "password": "qeq3eqeq3e3q",
+    "oldPassword": "qeq3eqeq3e3q"
+ }
+
+
+###
+
+POST http://localhost:5000/api/url
+Content-Type: application/json
+
+ {
+    "url": "http://localhost:5000/"
+ }
+
+
+###
+
+GET http://localhost:5000/api/url/1

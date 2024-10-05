@@ -1,6 +1,9 @@
 import path from 'node:path'
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import { AuthRouter } from './routes/AuthRoutes.js'
+import { AuthController } from './controllers/AuthController.js'
+import { LinkRouter } from './routes/LInkRoutes.js'
 
 const app = express()
 
@@ -11,7 +14,11 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(process.cwd(), './app/dist')))
 
+app.use(AuthController.authorize)
+
 // API
+app.use('/api/auth',AuthRouter)
+app.use('/api/url', LinkRouter)
 
 app.get('/api', (req, res) => {
     return res.json(path.join(process.cwd(), '../app/dist'))
