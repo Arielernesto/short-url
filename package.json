@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon api/index.js",
-    "start": "nodemon api/index.js"
+    "start": "nodemon api/index.js",
+    "postinstall": "prisma generate",
+    "build": "pnpm install"
   },
   "keywords": [],
   "author": "",
