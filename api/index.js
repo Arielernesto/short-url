@@ -14,7 +14,7 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(process.cwd(), './app/dist')))
 
-app.use(AuthController.authorize)
+// app.use(AuthController.authorize)
 
 // API
 app.use('/api/auth',AuthRouter)
