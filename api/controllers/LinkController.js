@@ -2,41 +2,60 @@ import { z } from 'zod'
 import { prisma } from '../utils/prisma.js'
 
 const urlSchema = z.string().url()
-const API_URL = "http://localhost:5000/api/url"
+const API_URL = "https://short-url-azure.vercel.app/"
 
 export class LinkController {
     static async index(req, res){
-        res.json({message: "Hola Mundo"})
+       try {
+         const { user } = req.session
+         if (!user) return res.status(500).json({error: "Acceso no autorizado"})
+         const URLs = await prisma.link.findMany({
+             where: {
+                 userId: user.id
+             }
+         })
+        
+         return res.json({message: "Ok", URLs})
+       } catch (error) {
+         return res.status(500).json({error: "Ha ocurrido un error"})
+       }
     }
 
     static async find(req, res){
         const { id } = req.params
-        console.log(req.params)
         const parseId = parseInt(id)
         const url = await prisma.link.findFirst({
             where: {
                 id: parseId
             }
         })
-        if (!url) return res.redirect('http')
+
+        const updatedURL = await prisma.link.update({
+            where: {
+                id: parseId
+            },
+            data: {
+                clicks: `${parseInt(url.clicks) + 1}`
+            }
+        })
+        if (!url) return res.redirect('http') // TODO: PAGINA 404
         return res.redirect(url.url)
     }
     static async create(req, res){
         const { user } = req.session
-        const userId = user.id ?? "0"
+        const userId = user ? user.id : "0"
         const { url } = req.body
         const results = urlSchema.safeParse(url)
-        if (results.error) return res.status(500).json({error: "Ingrese una url válida"})
-        
+        if (results.error) return res.status(500).json({error: "Ingrese una url válida", results})
+
         try {
-            console.log(results.data)
             const shortURL = await prisma.link.create({
                     data: {
                         userId: userId,
                         url: results.data
                     }
                 })
-            if (shortURL) return res.json({message: "URL acortada con éxito", url: `${API_URL}/${shortURL.id}`})
+            if (shortURL) return res.json({message: "URL acortada con éxito", url: `${API_URL}/${shortURL.id}`, original: shortURL.url, id: shortURL.id})
         } catch (error) {
             return res.status(500).json({error: "Ha ocurrido un error", error: error})
         }
@@ -46,16 +65,16 @@ export class LinkController {
             try {
                 const { user } = req.session
                 if (!user) return res.status(500).json({error: "Acceso no autorizado"})
-                const { id } = req.body
+                const { id } = req.params
                 const deletedURL = await prisma.link.delete({
                     where: {
-                        id: id,
+                        id: parseInt(id),
                         userId: user.id
                     }
                 })
                 return res.json({message: "URL acortada eliminada con éxito"})
             } catch (error) {
-                return res.status(500).json({error: "Ha ocurrido un error al elimianr la URL"})
+                return res.status(500).json({error: "Ha ocurrido un error al eliminar la URL"})
             }
         }
 
