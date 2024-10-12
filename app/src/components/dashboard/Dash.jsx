@@ -34,7 +34,7 @@ import { API_HOST } from "../../lib/config"
 import z from 'zod'
 import { useNavigate } from "react-router-dom"
 
-export const API_URL = "https://short-url-azure.vercel.app/" //TODO
+export const API_URL = "https://short-url-azure.vercel.app/api/url" //TODO
 
 export default function DashBoard() {
   const [urls, setUrls] = useState([])
