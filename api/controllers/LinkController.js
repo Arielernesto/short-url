@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { prisma } from '../utils/prisma.js'
 
 const urlSchema = z.string().url()
-const API_URL = "https://short-url-azure.vercel.app/url"
+const API_URL = "https://short-url-azure.vercel.app/api/url"
 
 export class LinkController {
     static async index(req, res){
